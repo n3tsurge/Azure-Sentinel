@@ -1,0 +1,7 @@
+let command_count = 5;
+SysmonAll
+| where ParentImage has_any ("cmd.exe", "powershell.exe")
+| where CommandLine has_any ("whoami", "ipconfig", "net user", "net share", "systeminfo", "ver", "set username", "set userdomain", "netstat", "arp", "netsh firewall", "tasklist")
+| summarize commands=make_list(CommandLine), count() by tostring(Computer)
+| where count_ > command_count
+
