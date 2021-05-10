@@ -1,2 +1,3 @@
 # Azure-Sentinel
-Azure Sentinel Stuff
+
+A collection of Azure Sentinel stuff
