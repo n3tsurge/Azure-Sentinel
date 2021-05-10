@@ -1,0 +1,5 @@
+SysmonAll | where Hashes != ""
+| extend FileHashSha1 = extract("SHA1=([A-Z0-9]+),?", 1, tostring(Hashes))
+| extend FileHashSha256 = extract("SHA256=([A-Z0-9]+),?", 1, tostring(Hashes))
+| extend FileHashShaMd5 = extract("MD5=([A-Z0-9]+),?", 1, tostring(Hashes))
+| extend Imphash = extract("IMPHASH=([A-Z0-9]+),?", 1, tostring(Hashes))
