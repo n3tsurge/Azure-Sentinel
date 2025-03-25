@@ -1,0 +1,12 @@
+// Define a list of approved callers to tune the alert
+let approved_callers = dynamic([]);
+// Exclude certain Diagnostic Setting configuration names
+let target_resource = dynamic([]);
+AzureActivity
+| where TimeGenerated > ago(1d)
+| where OperationNameValue == 'MICROSOFT.INSIGHTS/DIAGNOSTICSETTINGS/DELETE' and ActivityStatusValue == "Success"
+| extend properties_resource = Properties_d.resource
+| where Caller !in (approved_callers) and not(properties_resource has_any (target_resource))
+| summarize hits=count() by Caller
+| sort by hits desc
+| where hits > 5
