@@ -10,7 +10,7 @@ let historical_users = (
     | where eventID_s == "3201"
     | extend sourceUser = extract('\\((.*)\\)',1,suser_s)
     | summarize shells=count() by sourceUser
-    | where shells >= 3
+    | where shells >= shell_threshold
     | project sourceUser
 );
 // Locate all Remote Shell sessions where the user is new
