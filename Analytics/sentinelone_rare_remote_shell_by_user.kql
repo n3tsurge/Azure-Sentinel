@@ -1,0 +1,21 @@
+// Detect users establishing Remote Shell sessions that rarely
+// perform the activity
+// Query for users who have run a Remote Shell session more than once in the last 30 days
+let shell_threshold = 3;
+let learning_period = 30d;
+let lookback = 1d;
+let historical_users = (
+    sentinelone_CL
+    | where TimeGenerated > ago(learning_period)
+    | where eventID_s == "3201"
+    | extend sourceUser = extract('\\((.*)\\)',1,suser_s)
+    | summarize shells=count() by sourceUser
+    | where shells >= 3
+    | project sourceUser
+);
+// Locate all Remote Shell sessions where the user is new
+sentinelone_CL
+| where TimeGenerated > ago(lookback)
+| where eventID_s == "3201"
+| extend sourceUser = extract('\\((.*)\\)',1,suser_s)
+| where sourceUser !in (historical_users)
